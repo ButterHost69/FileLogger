@@ -25,7 +25,8 @@ func (fl *FileLogger) Init(filePath string, opts ...LoggerOptions) error {
 	_, err := os.Stat(filePath)
 	if err != nil {
 		if os.IsExist(err) {
-			log.Println("file does not exists...")
+			log.Println("file does not exists...\nCreating the file ", filePath)
+			os.Create(filePath)
 		} else {
 			log.Println(err)
 		}
