@@ -1,6 +1,7 @@
 package filelogger
 
 import (
+	"errors"
 	"log"
 	"os"
 	"time"
@@ -23,7 +24,7 @@ func (fl *FileLogger) Init(filePath string, opts ...LoggerOptions) error {
 	fl.LogFilePath = filePath
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		log.Printf("file does not exists...\nCreating the file %s\n", filePath)
+		// log.Printf("file does not exists...\nCreating the file %s\n", filePath)
 		file, err := os.Create(filePath)
 		if err != nil {
 			log.Panic(err)
@@ -51,7 +52,7 @@ func (fl *FileLogger) writeToFile(data string) error {
 	return err
 }
 
-func (fl *FileLogger) Log(param interface{}) {
+func (fl *FileLogger) Log(param interface{}) error {
 	var data string
 	switch inp := param.(type) {
 	case error:
@@ -72,6 +73,8 @@ func (fl *FileLogger) Log(param interface{}) {
 
 	err := fl.writeToFile(data)
 	if err != nil {
-		log.Println("Error writing to log file:", err.Error())
+		return errors.New("Error writing to log file:" + err.Error())
 	}
+
+	return nil
 }
